@@ -48,7 +48,8 @@ export default async function RootLayout({
     process.env.ANNOUNCEMENT ||
     '本网站仅提供影视信息搜索服务，所有内容均来自第三方网站。本站不存储任何视频资源，不对任何内容的准确性、合法性、完整性负责。';
   let enableRegister = process.env.NEXT_PUBLIC_ENABLE_REGISTER === 'true';
-  let imageProxy = process.env.NEXT_PUBLIC_IMAGE_PROXY || '';
+  let imageProxy =
+    process.env.NEXT_PUBLIC_IMAGE_PROXY || '/api/image-proxy?url=';
   let doubanProxy = process.env.NEXT_PUBLIC_DOUBAN_PROXY || '';
   let disableYellowFilter =
     process.env.NEXT_PUBLIC_DISABLE_YELLOW_FILTER === 'true';
@@ -66,7 +67,11 @@ export default async function RootLayout({
     siteName = config.SiteConfig.SiteName;
     announcement = config.SiteConfig.Announcement;
     enableRegister = config.UserConfig.AllowRegister;
-    imageProxy = config.SiteConfig.ImageProxy;
+    // 兜底：未配置时默认走站内自建代理，修复豆瓣等图床反盗链导致的封面 403/418
+    imageProxy =
+      config.SiteConfig.ImageProxy ||
+      process.env.NEXT_PUBLIC_IMAGE_PROXY ||
+      '/api/image-proxy?url=';
     doubanProxy = config.SiteConfig.DoubanProxy;
     disableYellowFilter = config.SiteConfig.DisableYellowFilter;
     customCategories = config.CustomCategories.filter(
